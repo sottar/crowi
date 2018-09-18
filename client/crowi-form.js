@@ -522,4 +522,32 @@ $(function() {
     })
   }
   enableScrollSync()
+
+  $(window).on('keydown', function(e) {
+    // over write cmd+s and ctrl+s
+    if ((e.ctrlKey || e.metaKey) && e.keyCode === 83) {
+      $.ajax({
+        type: 'POST',
+        url: '/_api/revisions.save',
+        data: {
+          pageForm: {
+            path: $('[name="pageForm[path]"]').value,
+            currentRevision: $('[name="pageForm[currentRevision]"]').value,
+            notify: {
+              slack: {
+                on: $('[name="pageForm[notify][slack][on]"]').value,
+                channel: $('[name="pageForm[notify][slack][channel]"]').value,
+              },
+            },
+            grant: $('[name="pageForm[grant]"]').value,
+            body: $('[name="pageForm[body]"]').value,
+          },
+        },
+        dataType: 'json',
+      }).done(function(res) {
+        console.log(res)
+      })
+      return false
+    }
+  })
 })
